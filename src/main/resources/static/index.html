@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+    <title>Spring Boot WebSocket Chat Application</title>
+    <link rel="stylesheet" href="/css/main.css?v=2" />
+</head>
+<body>
+<noscript>
+    <h2>Sorry! Your browser doesn't support Javascript</h2>
+</noscript>
+
+<div id="username-page">
+    <div class="username-page-container">
+        <svg class="spark-logo" width="52" height="52" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <linearGradient id="sparkGradientLogin" x1="2" y1="2" x2="22" y2="22" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%" stop-color="#8AB4F8"/>
+                    <stop offset="50%" stop-color="#C58AF9"/>
+                    <stop offset="100%" stop-color="#F28B82"/>
+                </linearGradient>
+            </defs>
+            <path d="M12 2c.5 4.5 2.2 7.2 5 9.5 2.5 2 5 3 5 3s-2.5 1-5 3c-2.8 2.3-4.5 5-5 9.5-.5-4.5-2.2-7.2-5-9.5-2.5-2-5-3-5-3s2.5-1 5-3c2.8-2.3 4.5-5 5-9.5z" fill="url(#sparkGradientLogin)"/>
+        </svg>
+        <h1 class="title">Hi there. What should we call you?</h1>
+        <p class="subtitle">Pick a name to join the conversation</p>
+        <form id="usernameForm" name="usernameForm">
+            <div class="form-group">
+                <input type="text" id="name" placeholder="Enter your name" autocomplete="off" class="form-control" />
+            </div>
+            <div class="form-group">
+                <button type="submit" class="accent username-submit">Start chatting</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="chat-page" class="hidden">
+    <div class="chat-container">
+        <div class="chat-header">
+            <svg class="spark-logo-sm" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <linearGradient id="sparkGradientHeader" x1="2" y1="2" x2="22" y2="22" gradientUnits="userSpaceOnUse">
+                        <stop offset="0%" stop-color="#8AB4F8"/>
+                        <stop offset="50%" stop-color="#C58AF9"/>
+                        <stop offset="100%" stop-color="#F28B82"/>
+                    </linearGradient>
+                </defs>
+                <path d="M12 2c.5 4.5 2.2 7.2 5 9.5 2.5 2 5 3 5 3s-2.5 1-5 3c-2.8 2.3-4.5 5-5 9.5-.5-4.5-2.2-7.2-5-9.5-2.5-2-5-3-5-3s2.5-1 5-3c2.8-2.3 4.5-5 5-9.5z" fill="url(#sparkGradientHeader)"/>
+            </svg>
+            <h2>Product Search NL</h2>
+        </div>
+        <div class="connecting">
+            Connecting...
+        </div>
+        <ul id="messageArea">
+
+        </ul>
+        <form id="messageForm" name="messageForm">
+            <div class="form-group">
+                <div class="input-group clearfix">
+                    <input type="text" id="message" placeholder="Message Ferguson…" autocomplete="off" class="form-control"/>
+                    <button type="submit" class="primary" aria-label="Send message">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M3.4 20.6L21 12 3.4 3.4 3 10l13 2-13 2z" fill="currentColor"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.1.4/sockjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+<script src="/js/main.js?v=2"></script>
+</body>
+</html>
