@@ -52,6 +52,8 @@ function onError(error) {
 }
 
 
+var pendingOwnEchoes = 0;
+
 function sendMessage(event) {
     var messageContent = messageInput.value.trim();
     if (messageContent && stompClient) {
@@ -62,14 +64,73 @@ function sendMessage(event) {
         };
         stompClient.send("/app/chat.sendMessage", {}, JSON.stringify(chatMessage));
         messageInput.value = '';
+
+        // Render our own message right away instead of waiting for the
+        // server to broadcast it back to us, so it appears above the
+        // typing indicator rather than after it.
+        renderMessage(chatMessage);
+        pendingOwnEchoes++;
+
+        showTypingIndicator();
     }
     event.preventDefault();
+}
+
+
+function showTypingIndicator() {
+    // Avoid stacking multiple indicators if one is already showing
+    if (document.getElementById('typingIndicator')) return;
+
+    var messageElement = document.createElement('li');
+    messageElement.classList.add('chat-message');
+    messageElement.id = 'typingIndicator';
+
+    var avatarElement = document.createElement('i');
+    var avatarText = document.createTextNode('M');
+    avatarElement.appendChild(avatarText);
+    avatarElement.style['background-color'] = getAvatarColor('BOT');
+    messageElement.appendChild(avatarElement);
+
+    var dotsWrap = document.createElement('div');
+    dotsWrap.className = 'typing-indicator';
+    dotsWrap.innerHTML = '<span></span><span></span><span></span>';
+    messageElement.appendChild(dotsWrap);
+
+    messageArea.appendChild(messageElement);
+    messageArea.scrollTop = messageArea.scrollHeight;
+}
+
+
+function removeTypingIndicator() {
+    var existing = document.getElementById('typingIndicator');
+    if (existing) {
+        existing.remove();
+    }
 }
 
 
 function onMessageReceived(payload) {
     var message = JSON.parse(payload.body);
 
+    // Skip re-rendering the echo of a message we already rendered
+    // optimistically when we sent it.
+    if (message.type === 'CHAT' && message.sender === username && pendingOwnEchoes > 0) {
+        pendingOwnEchoes--;
+        return;
+    }
+
+    // Only stop "typing" once the bot itself has actually replied —
+    // our own outgoing message gets echoed back to us too via
+    // /topic/public, so we must not clear it on that echo.
+    if (message.sender === 'BOT') {
+        removeTypingIndicator();
+    }
+
+    renderMessage(message);
+}
+
+
+function renderMessage(message) {
     var messageElement = document.createElement('li');
 
     if (message.type === 'JOIN') {
